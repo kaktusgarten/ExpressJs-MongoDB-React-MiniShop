@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import "#db";
 import { Animal } from "#models";
-import { postRoutes, userRoutes } from "#routes";
+import { postRoutes, productRoutes, userRoutes } from "#routes";
 import { errorHandler } from "#middlewares";
 
 const app = express();
@@ -20,6 +20,7 @@ app.use(
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/product", productRoutes);
 
 app.get("/", async (require, res) => {
   res.json({ message: "Server läuft mit API Request über Präfix /api/..." });

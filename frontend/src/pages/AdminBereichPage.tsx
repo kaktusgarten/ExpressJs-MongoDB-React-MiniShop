@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import UserOverview from "../components/admin/UserOverview";
+import { NewProduct } from "../components/admin/NewProduct";
 
 type User = {
   _id: string;
@@ -55,9 +56,8 @@ export default function AdminBereichPage() {
         gesetzt sein. Siehe ProtectedLayout.tsx und GesamtseitenContext.tsx.
       </div>
 
-      {loading && <p>Lade Nutzer...</p>}
-      {error && <p className="text-red-600">Fehler: {error}</p>}
-      {!loading && !error && <UserOverview users={users} />}
+      <UserOverview />
+      <NewProduct />
     </main>
   );
 }
