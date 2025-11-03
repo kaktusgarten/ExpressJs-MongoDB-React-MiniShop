@@ -1,0 +1,58 @@
+{
+  "name": "express_routers",
+  "version": "1.0.0",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "main": "app.ts",
+  "type": "module",
+  "imports": {
+    "#db": {
+      "development": "./src/db/index.ts",
+      "default": "./dist/db/index.js"
+    },
+    "#models": {
+      "development": "./src/models/index.ts",
+      "default": "./dist/models/index.js"
+    },
+    "#routes": {
+      "development": "./src/routes/index.ts",
+      "default": "./dist/routes/index.js"
+    },
+    "#controllers": {
+      "development": "./src/controllers/index.ts",
+      "default": "./dist/controllers/index.js"
+    },
+    "#middlewares": {
+      "development": "./src/middlewares/index.ts",
+      "default": "./dist/middlewares/index.js"
+    },
+    "#schemas": {
+      "development": "./src/schemas/index.ts",
+      "default": "./dist/schemas/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "node --watch --conditions development --env-file=.env src/app.ts",
+    "prebuild": "rm -rf dist",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node --env-file=.env dist/app.js"
+  },
+  "dependencies": {
+    "cloudinary": "^2.8.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.2",
+    "multer": "^2.0.2",
+    "multer-storage-cloudinary": "^4.0.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/mongoose": "^5.11.96",
+    "@types/node": "^24.9.1",
+    "typescript": "^5.9.3"
+  }
+}
