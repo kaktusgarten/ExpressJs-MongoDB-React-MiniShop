@@ -35,5 +35,5 @@ app.get("/api/animals", async (req, res) => {
 app.use(errorHandler);
 
 app.listen(port, () =>
-  console.log(`\x1b[35mMain app listening at http://localhost:${port}\x1b`)
+  console.log(`Server läuft auf: http://localhost:${port}`)
 );

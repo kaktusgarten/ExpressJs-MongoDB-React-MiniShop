@@ -22,7 +22,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="p-4 py-10 overflow-auto">
+      <header className="p-4 pt-10 overflow-auto">
         <div
           className="p-10 mb-5"
           style={{
@@ -46,7 +46,7 @@ export default function Header() {
             Eine Sample-Shop Übung mit Express.js und React
           </p>
         </div>
-        <div className="grid grid-cols-2">
+        <div className="grid md:grid-cols-3">
           <div className="min-h-[52px]">
             <nav>
               <ul className="menu menu-horizontal bg-black rounded-box lg:mb-64 absolute">
@@ -106,6 +106,19 @@ export default function Header() {
                 </li>
                 <li>
                   <NavLink to="/admin-bereich">Admin Bereich</NavLink>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+          <div className="min-h-[52px]">
+            <nav>
+              <ul className="menu menu-horizontal bg-black rounded-box lg:mb-64  absolute">
+                <li>
+                  <NavLink to="/kontodaten">Meine Kontodaten</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/warenkorb">Mein Warenkorb</NavLink>
                 </li>
               </ul>
             </nav>

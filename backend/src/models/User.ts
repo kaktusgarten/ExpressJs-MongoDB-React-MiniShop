@@ -1,10 +1,10 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 
 const userSchema = new Schema(
   {
     firstName: {
       type: String,
-      required: [true, 'Nachname is required'],
+      required: [true, "Nachname is required"],
       trim: true,
     },
     lastName: {
@@ -58,4 +58,4 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-export default model('User', userSchema);
+export default model("User", userSchema);
