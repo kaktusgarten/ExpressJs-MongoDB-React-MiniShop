@@ -1,4 +1,3 @@
-.gitignore
 # Node modules in allen Unterordnern ignorieren
 node_modules/
 
