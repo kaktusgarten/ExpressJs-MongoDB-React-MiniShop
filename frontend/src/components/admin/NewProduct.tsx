@@ -35,7 +35,7 @@ export const NewProduct = () => {
     setErrors({});
 
     try {
-      const res = await fetch("http://localhost:3000/api/products", {
+      const res = await fetch("http://localhost:3000/api/product", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

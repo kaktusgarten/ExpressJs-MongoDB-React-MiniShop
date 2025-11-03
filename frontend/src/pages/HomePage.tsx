@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Products from "../components/Products";
 
 export default function HomePage() {
   const [animalData, setAnimalData] = useState();
@@ -24,18 +25,17 @@ export default function HomePage() {
   return (
     <>
       <main className="p-4">
-        <h2 className="mb-2 text-3xl">
-          HOME - Playground für React mit Typescript
-        </h2>
         <div className="p-5">
-          Animals:
-          <div>
+          <Products />
+
+          <section className="pt-10">
+            Animals:
             {animalData?.map((animal: any, index: number) => (
               <p key={index}>
                 {animal.name} : Tierart: {animal.art} : {animal.beschreibung}
               </p>
             ))}
-          </div>
+          </section>
         </div>
       </main>
     </>
