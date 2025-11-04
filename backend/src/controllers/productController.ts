@@ -3,7 +3,6 @@ import { Product, Category } from "#models";
 import mongoose from "mongoose";
 
 // CREATE Product ###############
-
 export const createProduct: RequestHandler = async (req, res) => {
   const { name, description, price, category } = req.body;
 
@@ -34,8 +33,20 @@ export const createProduct: RequestHandler = async (req, res) => {
 
 // GET ALL Products ################
 export const getAllProducts: RequestHandler = async (req, res) => {
-  const allProducts = await Product.find();
+  const allProducts = await Product.find().populate("categoryId", "name");
+  console.log(allProducts);
   res.status(200).json(allProducts);
+};
+
+// GET Products by ID ################
+
+// !!!!!!!!!!!!!!!!!!!!!! Unfertig !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+export const getProductById: RequestHandler = async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  const productById = await Product.findById(id).populate("categoryId", "name");
+  console.log(productById);
+  res.status(200).json(productById);
 };
 
 // GET Products by Category #############
