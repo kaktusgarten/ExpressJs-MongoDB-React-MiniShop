@@ -2,7 +2,13 @@ import express from "express";
 import cors from "cors";
 import "#db";
 import { Animal } from "#models";
-import { categoryRoutes, postRoutes, productRoutes, userRoutes } from "#routes";
+import {
+  categoryRoutes,
+  postRoutes,
+  productRoutes,
+  userRoutes,
+  orderRoutes,
+} from "#routes";
 import { errorHandler } from "#middlewares";
 
 const app = express();
@@ -22,6 +28,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.get("/", async (req, res) => {
   res.json({ message: "Server läuft für API Request über Präfix /api/..." });

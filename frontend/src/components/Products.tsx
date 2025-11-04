@@ -11,7 +11,6 @@ export default function Products() {
           headers: { "Content-Type": "application/json" },
         });
         const data = await res.json();
-        console.log(data);
         setProducts(data);
       } catch (error) {
         console.log("Fehler ist aufgetreten: " + error);

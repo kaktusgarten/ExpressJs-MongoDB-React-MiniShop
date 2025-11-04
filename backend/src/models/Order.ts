@@ -1,11 +1,15 @@
 import { Document, Schema, model, Types } from "mongoose";
 
+// Interface für ein einzelnes Produkt im Warenkorb
+export interface IOrderProduct {
+  productId: Types.ObjectId;
+  quantity: number;
+}
+
+// Interface für eine Order
 export interface IOrder extends Document {
   userId: Types.ObjectId;
-  products: {
-    productId: string;
-    quantity: number;
-  }[];
+  products: IOrderProduct[];
   total: number;
 }
 
@@ -23,12 +27,20 @@ const orderSchema = new Schema<IOrder>(
           ref: "Product",
           required: true,
         },
-        quantity: { type: Number, required: true, min: 1 },
+        quantity: {
+          type: Number,
+          required: true,
+          min: 1,
+        },
       },
     ],
-    total: { type: Number, required: true, min: 0 },
+    total: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
   },
   { timestamps: true }
 );
 
-export default model<IOrder>('Order', orderSchema)
+export default model<IOrder>("Order", orderSchema);
