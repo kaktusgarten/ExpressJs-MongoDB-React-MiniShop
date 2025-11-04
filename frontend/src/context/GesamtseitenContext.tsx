@@ -31,7 +31,6 @@ export default function GesamtseitenContextProvider({
   };
 
   return (
-    // Global verfügbare Daten hier nochmal eintragen:
     <GesamtseitenContext value={values}>{children}</GesamtseitenContext>
   );
 }

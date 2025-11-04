@@ -8,6 +8,8 @@ import RegistrierungPage from "./pages/RegistrierungPage";
 import AdminBereichPage from "./pages/AdminBereichPage";
 import ProtectedLayout from "./layouts/ProtectedLayout";
 import NotFoundPage from "./pages/NotFoundPage";
+import WarenkorbPage from "./pages/WarenkorbPage";
+import AccountPage from "./pages/AccountPage";
 
 function App() {
   return (
@@ -15,9 +17,12 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<HomePage />} />
+          <Route path=":slug" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registrierung" element={<RegistrierungPage />} />
+          <Route path="/warenkorb" element={<WarenkorbPage />} />
+          <Route path="/kontodaten" element={<AccountPage />} />
           <Route element={<ProtectedLayout />}>
             <Route path="/admin-bereich" element={<AdminBereichPage />} />
           </Route>

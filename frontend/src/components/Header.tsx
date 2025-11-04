@@ -1,23 +1,38 @@
 import { NavLink } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LoginModal from "./LoginModal";
 export default function Header() {
+  interface Category {
+    _id: string;
+    name: string;
+  }
+  const [categories, setCategories] = useState<Category[] | null>(null);
+
   useEffect(() => {
-    const menu = document.querySelector("nav ul.menu");
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/categories`);
+        const data = await res.json();
+        setCategories(data);
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCategories();
 
-    if (!menu) return;
-
-    const handleClick = (e) => {
-      // Wenn ein Link oder NavLink geklickt wird:
-      if (e.target.tagName === "A") {
-        // Schließe alle offenen <details>
-        const openDetails = menu.querySelectorAll("details[open]");
-        openDetails.forEach((d) => d.removeAttribute("open"));
+    // Menu schließt alle Submenüs bei klick:
+    const handleClick = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target.closest("a")) {
+        document
+          .querySelectorAll("details[open]")
+          .forEach((d) => d.removeAttribute("open"));
       }
     };
 
-    menu.addEventListener("click", handleClick);
-    return () => menu.removeEventListener("click", handleClick);
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
   }, []);
 
   return (
@@ -43,7 +58,7 @@ export default function Header() {
             className="mb-6 text-2xl"
             style={{ textShadow: "1px 1px 2px black" }}
           >
-            Eine Sample-Shop Übung mit Express.js und React
+            Übungsprojekt mit Express.js, MongoDB und React
           </p>
         </div>
         <div className="grid md:grid-cols-3">
@@ -56,13 +71,15 @@ export default function Header() {
                 <li>
                   <details>
                     <summary>Kategorien</summary>
-                    <ul>
+                    <ul className="bg-black">
                       <li>
-                        <a>Garagen</a>
+                        <NavLink to="/">Alle zeigen</NavLink>
                       </li>
-                      <li>
-                        <a>Gartenhäuser</a>
-                      </li>
+                      {categories?.map((cat) => (
+                        <li key={cat._id}>
+                          <NavLink to={`/${cat._id}`}>{cat.name}</NavLink>
+                        </li>
+                      ))}
                     </ul>
                   </details>
                 </li>

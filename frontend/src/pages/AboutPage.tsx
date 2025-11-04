@@ -6,7 +6,8 @@ export default function AboutPage() {
 
         <div className="p-5">
           <p className="text-xl">
-            1. Auf dieser Base React Site werden folgende Frameworks & Methoden erprobt:
+            1. Auf dieser Base React Site werden folgende Frameworks & Methoden
+            erprobt:
           </p>
           <ul className="p-5 text-xl">
             <li>Vite</li>
@@ -20,14 +21,14 @@ export default function AboutPage() {
             <li>useFormAction() - Form Validierung</li>
             <li>useRef() - Für Open-Login-Modal</li>
             <li>API-Anbindung an Node/Express.js Projekt</li>
+            <li>MongoDB</li>
           </ul>
           <p className="text-xl">2. Impressum</p>
           <ul className="p-5 text-xl">
             <li>Marco Rehberg</li>
-            <li>B.Sc. Medieninformatik</li>
             <li>Schleiermacherstr. 18</li>
             <li>28201 Bremen</li>
-            <li>E-Mail: info@raumbasis.com</li>
+            <li>Tel.: 01575 88 0 77 90</li>
           </ul>
         </div>
       </main>
