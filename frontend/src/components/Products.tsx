@@ -5,13 +5,20 @@ export default function Products() {
 
   useEffect(() => {
     const getProducts = async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/product/`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      const data = await res.json();
-      console.log(data);
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/products/`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        const data = await res.json();
+        console.log(data);
+        setProducts(data);
+      } catch (error) {
+        console.log("Fehler ist aufgetreten: " + error);
+      }
     };
+
+    getProducts();
   }, []);
 
   return (
@@ -19,10 +26,16 @@ export default function Products() {
       <section className="pt-6">
         <h2 className="mb-2 text-3xl">Produkte:</h2>
         <div className="grid md:grid-cols-4 gap-5">
-          <article className="border p-10">Ich bin ein Produkt</article>
-          <article className="border p-10">Ich bin ein Produkt</article>
-          <article className="border p-10">Ich bin ein Produkt</article>
-          <article className="border p-10">Ich bin ein Produkt</article>
+          {products?.map((product) => (
+            <article key={product._id} className="border p-10">
+              <h3 className="text-xl font-bold">{product.name}</h3>
+              <p>{product.description}</p>
+              <p className="font-semibold">Preis: {product.price} €</p>
+              <p className="text-sm text-gray-500">
+                Kategorie: {product.categoryId?.name || "–"}
+              </p>
+            </article>
+          ))}
         </div>
       </section>
     </>
