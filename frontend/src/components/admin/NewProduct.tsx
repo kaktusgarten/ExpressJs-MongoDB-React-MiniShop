@@ -11,16 +11,20 @@ export const NewProduct = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const validate = () => {
     const errs: Record<string, string> = {};
     if (!formData.name) errs.name = "Name ist erforderlich.";
-    if (!formData.description) errs.description = "Beschreibung ist erforderlich.";
+    if (!formData.description)
+      errs.description = "Beschreibung ist erforderlich.";
     if (!formData.price) errs.price = "Preis ist erforderlich.";
-    if (!formData.categoryId) errs.categoryId = "Kategorie-ID ist erforderlich.";
+    if (!formData.categoryId)
+      errs.categoryId = "Kategorie-ID ist erforderlich.";
     return errs;
   };
 
@@ -35,14 +39,14 @@ export const NewProduct = () => {
     setErrors({});
 
     try {
-      const res = await fetch("http://localhost:3000/api/product", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name,
           description: formData.description,
           price: Number(formData.price),
-          categoryId: formData.categoryId,
+          category: formData.categoryId,
         }),
       });
 
@@ -99,7 +103,9 @@ export const NewProduct = () => {
             min="0"
             step="0.01"
           />
-          {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
+          {errors.price && (
+            <p className="text-red-500 text-sm">{errors.price}</p>
+          )}
 
           {/* Kategorie-ID */}
           <label className="label mt-3">Kategorie-ID</label>

@@ -45,7 +45,7 @@ export default function LoginForm() {
     try {
       console.log("ABSENDEN:", data);
       // Optional: Warten, um isPending zu testen
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Sample TEST Token setzen:
       setMyToken("Token123123123123");
