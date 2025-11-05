@@ -59,7 +59,7 @@ export default function RegistrationForm() {
 
       // POST-Request an Backend
       const { password2, ...sendData } = data; // password2 nicht speichern
-      const res = await fetch("http://localhost:3000/api/users", {
+      const res = await fetch("http://localhost:3000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(sendData),

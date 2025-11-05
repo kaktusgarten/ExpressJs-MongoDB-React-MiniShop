@@ -22,8 +22,16 @@ function validateLogin(data: Record<string, string>) {
 }
 
 export default function LoginForm() {
-  const navigate = useNavigate();
   const { myToken, setMyToken } = use(GesamtseitenContext);
+  const navigate = useNavigate();
+
+  function goToRegister() {
+    // Weiterleitung zur Registrierungsseite und Close Modal
+    navigate("/registrierung");
+    (
+      document.getElementById("loginModal") as HTMLDialogElement | null
+    )?.close();
+  }
 
   // ACTION-FUNKTION (statt onSubmit)
   async function submitAction(_prevState: any, formData: FormData) {
@@ -47,26 +55,22 @@ export default function LoginForm() {
       // Optional: Warten, um isPending zu testen
       // await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Sample TEST Token setzen:
-      setMyToken("Token123123123123");
-      alert("Test Token gesetzt! Admin Bereich jetzt verfügbar!");
-
-      // Beispielhafter Login-Request
-      const res = await fetch(`http://localhost:3000/api/login`, {
+      const res = await fetch(`http://localhost:3000/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
       if (!res.ok) {
+        alert("Login leider fehlgeschlagen.");
         throw new Error("Login fehlgeschlagen");
       }
 
       const result = await res.json();
       console.log("Request OK. Server-Response ist: ", result);
-      // Sample Token setzen:
-      // setMyToken("Token123123123123");
-
+      // Token ERSTMAL aus response setzen:
+      setMyToken(result.token);
+      alert("Token gesetzt! Admin Bereich jetzt verfügbar!");
       // Schließe Modal (wenn vorhanden)
       (
         document.getElementById("loginModal") as HTMLDialogElement | null
@@ -138,11 +142,14 @@ export default function LoginForm() {
           <p className="text-sm text-red-400 mt-1">{formState.errors.button}</p>
         )}
 
-        <p className="m-3">
-          <Link to="/registrierung">
-            Du hast noch kein Konto?{" "}
-            <span className="underline">Hier registrieren!</span>
-          </Link>
+        <p className="text-lg m-3 pt-6">
+          Du hast noch kein Konto?&nbsp; {"  "}
+          <span
+            className="underline cursor-context-menu"
+            onClick={goToRegister}
+          >
+            Hier registrieren!
+          </span>
         </p>
       </fieldset>
     </form>

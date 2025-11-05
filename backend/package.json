@@ -41,16 +41,21 @@
     "start": "node --env-file=.env dist/app.js"
   },
   "dependencies": {
-    "cloudinary": "^2.8.0",
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^1.41.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.2",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^24.9.1",
     "typescript": "^5.9.3"

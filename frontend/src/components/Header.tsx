@@ -1,7 +1,24 @@
 import { NavLink } from "react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
+import { GesamtseitenContext } from "../context/GesamtseitenContext";
 import LoginModal from "./LoginModal";
+
 export default function Header() {
+  const { myToken, setMyToken } = use(GesamtseitenContext);
+
+  const logout = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      console.log(data);
+      setMyToken(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   interface Category {
     _id: string;
     name: string;
@@ -115,12 +132,15 @@ export default function Header() {
           <div className="min-h-[52px]">
             <nav>
               <ul className="menu menu-horizontal bg-black rounded-box lg:mb-64  absolute">
-                <li>
-                  <LoginModal />
-                </li>
-                <li>
-                  <NavLink to="/registrierung">Registrierung</NavLink>
-                </li>
+                {myToken ? (
+                  <li>
+                    <a onClick={logout}>Logout</a>
+                  </li>
+                ) : (
+                  <li>
+                    <LoginModal />
+                  </li>
+                )}
                 <li>
                   <NavLink to="/admin-bereich">Admin Bereich</NavLink>
                 </li>

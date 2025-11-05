@@ -46,16 +46,20 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: [true, "Passwort ist erforderlich"],
-      minlength: [6, "Passwort muss mindestens 6 Zeichen lang sein"],
+      required: [true, "Password is required"],
+      select: false,
     },
-    // ✅ Neues optionales Feld
+    roles: {
+      type: [String],
+      default: ["user"],
+    },
+    // Neues optionales Feld
     profileImage: {
       type: String,
-      default: "", // Cloudinary-URL oder leer
+      default: "/noImage.jpg", // Cloudinary-URL oder leer
     },
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 export default model("User", userSchema);

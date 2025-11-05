@@ -10,7 +10,7 @@ export default function LoginModal() {
         className="cursor-pointer"
         onClick={() => loginModal.current?.showModal()}
       >
-        Login
+        Login / Registrierung
       </div>
       <dialog id="loginModal" className="modal m-auto" ref={loginModal}>
         <div className="modal-box absolute">
