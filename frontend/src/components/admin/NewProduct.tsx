@@ -6,6 +6,7 @@ export const NewProduct = () => {
     description: "",
     price: "",
     categoryId: "",
+    image: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -53,7 +54,7 @@ export const NewProduct = () => {
       if (!res.ok) throw new Error("Fehler beim Erstellen des Produkts");
 
       setSuccess("✅ Produkt erfolgreich erstellt!");
-      setFormData({ name: "", description: "", price: "", categoryId: "" });
+      setFormData({ name: "", description: "", price: "", categoryId: "" , image: ""});
     } catch (err) {
       console.error(err);
       setSuccess("❌ Es gab ein Problem beim Erstellen des Produkts.");
@@ -108,7 +109,7 @@ export const NewProduct = () => {
           )}
 
           {/* Kategorie-ID */}
-          <label className="label mt-3">Kategorie-ID</label>
+          <label className="label mt-3">Kategorie-Name</label>
           <input
             name="categoryId"
             value={formData.categoryId}
@@ -119,6 +120,14 @@ export const NewProduct = () => {
           {errors.categoryId && (
             <p className="text-red-500 text-sm">{errors.categoryId}</p>
           )}
+
+          <fieldset className="fieldset mt-5">
+            <legend className="fieldset-legend font-normal">
+              Bild hochladen, optional
+            </legend>
+            <input type="file" className="file-input" />
+            <label className="label">Max size 2MB</label>
+          </fieldset>
 
           {/* Submit */}
           <button type="submit" className="btn btn-primary mt-4 w-full">
