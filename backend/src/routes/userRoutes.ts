@@ -1,21 +1,37 @@
-import { Router } from 'express';
 import {
+  changePassword,
   deleteUser,
   getAllUsers,
   getUserById,
-  registerUser,
   updateUser,
 } from '#controllers';
-import { validateBodyZod } from '#middlewares';
-import { userInputSchema } from '#schemas';
+import { authenticate, authorize, validateBodyZod } from '#middlewares';
+import { User } from '#models';
+import { changePasswordSchema, userInputSchema } from '#schemas';
+import { Router } from 'express';
 
 const userRoutes = Router();
 
+// PUBLIC
 userRoutes.get('/', getAllUsers);
-userRoutes.post('/', validateBodyZod(userInputSchema), registerUser);
-
 userRoutes.get('/:id', getUserById);
-userRoutes.put('/:id', validateBodyZod(userInputSchema), updateUser);
-userRoutes.delete('/:id', deleteUser);
+
+userRoutes.put(
+  '/:id',
+  authenticate,
+  authorize(User),
+  validateBodyZod(userInputSchema),
+  updateUser
+);
+
+userRoutes.patch(
+  '/:id/password',
+  authenticate,
+  authorize(User),
+  validateBodyZod(changePasswordSchema),
+  changePassword
+);
+
+userRoutes.delete('/:id', authenticate, authorize(User), deleteUser);
 
 export default userRoutes;

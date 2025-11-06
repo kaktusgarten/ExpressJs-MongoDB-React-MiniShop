@@ -12,12 +12,13 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: "raumbasis_images", // 🔄 eigener Ordner für Benutzerbilder
-    resource_type: "image",
-    allowed_formats: ["jpg", "jpeg", "png", "gif", "webp", "pdf"],
-    public_id: () => `user-${Date.now()}`,
-    limits: {
-      fileSize: 8 * 1024 * 1024, // 8MB
-    },
+    resource_type: "auto",
+    // resource_type: "image",
+    // allowed_formats: ["jpg", "jpeg", "png", "gif", "webp", "pdf"],
+    // public_id: () => `user-${Date.now()}`,
+    // limits: {
+    //   fileSize: 8 * 1024 * 1024, // 8MB
+    // },
   },
 } as any);
 

@@ -1,17 +1,33 @@
 import type { RequestHandler } from 'express';
 import { Post } from '#models';
 
-export const createPost: RequestHandler = async (req, res) => {
-  const { title, content, author } = req.body;
+// CREATE POST ####################################
+// prettier-ignore
+export const createPost: RequestHandler<
+unknown,
+any,
+PostInputDTO> = async (
+  req,
+  res
+) => {
+  const userId = req.user?.id;
+  
+  const { title, content } = req.body; // !
+  const files = (req.files as Express.Multer.File[]) || [];
+  const imageUrl = files.map((f) => f.path);
 
-  if (!title || !content || !author) {
-    return res.status(400).json({ message: 'Missing required fields' });
-  }
+  const newPost = await Post.create({
+    title,
+    content,
+    author: userId,
+    image_url: imageUrl,
+  });
 
-  const newPost = await Post.create({ title, content, author });
+  // console.log('cloudinary upload results', files);
   res.status(201).json(newPost);
 };
 
+// GET ALL POSTS ####################################
 export const getAllPosts: RequestHandler = async (req, res) => {
   const posts = await Post.find().populate(
     'author',
@@ -19,33 +35,50 @@ export const getAllPosts: RequestHandler = async (req, res) => {
   );
 
   if (!posts.length) {
-    return res.status(404).json({ message: 'No posts found' });
+    throw new Error('Post not found', { cause: { status: 404 } });
   }
-
   res.status(200).json(posts);
 };
 
+
+// GET POST BY ID ####################################
 export const getPostById: RequestHandler = async (req, res) => {
   const { id } = req.params;
-
   const post = await Post.findById(id).populate('author', 'firstName lastName');
 
   if (!post) {
-    return res.status(404).json({ message: 'Post not found' });
+    throw new Error('Post not found', { cause: { status: 404 } });
   }
-
   res.status(200).json(post);
 };
 
-export const updatePost: RequestHandler = async (req, res) => {
+// UPDATE POST ####################################
+// prettier-ignore
+export const updatePost: RequestHandler<
+  { id: string },
+  any,
+  PostInputDTO
+> = async (req, res) => {
   const { id } = req.params;
-  const { title, content, author } = req.body;
+  const { title, content } = req.body;
+  const files = (req.files as Express.Multer.File[]) || [];
 
-  const updatedPost = await Post.findByIdAndUpdate(
-    id,
-    { title, content, author },
-    { new: true, runValidators: true }
-  ).populate('author', 'firstName lastName');
+  const imageUrl = files.map((f) => f.path);
+
+  const updateData: any = { title, content };
+
+  if (imageUrl.length > 0) {
+    updateData.image_url = imageUrl;
+  }
+
+  const updatedPost = await Post.findByIdAndUpdate(id, updateData, {
+    new: true,
+    runValidators: true,
+  }).populate('author', 'firstName lastName');
+
+  if (!updatedPost) {
+    throw new Error('Post not found', { cause: { status: 404 } });
+  }
 
   res.status(200).json({
     message: 'post updated successfully',
@@ -53,17 +86,16 @@ export const updatePost: RequestHandler = async (req, res) => {
   });
 };
 
+// DELETE POST ####################################
 export const deletePost: RequestHandler = async (req, res) => {
   const { id } = req.params;
 
   const deletedPost = await Post.findByIdAndDelete(id);
-
   if (!deletedPost) {
-    return res.status(404).json({ message: 'Post not found' });
+    throw new Error('Post not found', { cause: { status: 404 } });
   }
 
   res.status(200).json({
     message: `Post with id:${id} was deleted`,
-    post: deletedPost,
   });
 };

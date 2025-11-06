@@ -1,29 +1,32 @@
 import type { RequestHandler } from 'express';
-import { Post } from '#models';
 
-const authorize: RequestHandler = async (req, res, next) => {
-  const { id } = req.params;
-  const post = await Post.findById(id);
+// Hier wird das Model zu Beispiel "User", "Post", "Products" übergeben.
+const authorize = (Model: any): RequestHandler => {
+  return async (req, res, next) => {
+    const { id } = req.params;
+    const model = await Model.findById(id);
 
-  if (!post) {
-    return next(new Error('Post not found', { cause: { status: 404 } }));
-  }
+    if (!model) {
+      return next(
+        new Error(`${Model.modelName} not found`, { cause: { status: 404 } })
+      );
+    }
 
-  // allow, if user is admin
-  if (req.user?.roles?.includes('admin')) {
-    return next();
-  }
+    // allow, if user is admin
+    if (req.user?.roles?.includes('admin')) return next();
 
-  // otherwise only allow if user is the author
-  if (post.author.toString() !== req.user?.id) {
-    return next(
-      new Error('Forbidden, you cannot modify this post', {
-        cause: { status: 403 },
-      })
-    );
-  }
+    const ownerId = model.author?.toString?.() ?? model._id.toString();
 
-  next();
+    if (ownerId !== req.user?.id) {
+      return next(
+        new Error('Forbidden, you cannot modify this', {
+          cause: { status: 403 },
+        })
+      );
+    }
+
+    next();
+  };
 };
 
 export default authorize;

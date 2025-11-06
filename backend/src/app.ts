@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import "#db";
-import { Animal } from "#models";
+// import { Animal } from "#models";
 import {
   categoryRoutes,
   postRoutes,
@@ -16,7 +16,6 @@ import { errorHandler } from "#middlewares";
 const app = express();
 const port = 3000;
 
-// body-parser
 app.use(express.json());
 app.use(cookieParser());
 app.use(

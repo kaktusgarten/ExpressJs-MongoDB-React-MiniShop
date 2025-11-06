@@ -4,7 +4,7 @@ export interface IPost extends Document {
   title: string;
   content: string;
   author: Types.ObjectId;
-  image: string;
+  image_url?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -26,8 +26,8 @@ const postSchema = new Schema<IPost>(
       ref: "User",
       required: [true, "Author is required"],
     },
-    image: {
-      type: String,
+    image_url: {
+      type: [String],
       required: [false, "image is not required at the moment..."],
     },
   },
