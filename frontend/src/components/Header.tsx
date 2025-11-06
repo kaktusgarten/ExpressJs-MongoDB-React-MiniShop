@@ -4,7 +4,7 @@ import { GesamtseitenContext } from "../context/GesamtseitenContext";
 import LoginModal from "./LoginModal";
 
 export default function Header() {
-  const { myToken, setMyToken } = use(GesamtseitenContext);
+  const { myToken, setMyToken, role, setRole } = use(GesamtseitenContext);
 
   const logout = async () => {
     try {
@@ -14,6 +14,7 @@ export default function Header() {
       const data = await res.json();
       console.log(data);
       setMyToken(null);
+      setRole(null);
     } catch (error) {
       console.log(error);
     }
@@ -37,6 +38,13 @@ export default function Header() {
       }
     };
     fetchCategories();
+
+    // const fetchMe = async () => {
+    //   const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`);
+    //   const data = await res.json();
+    //   console.log(data);
+    // };
+    // fetchMe();
 
     // Menu schließt alle Submenüs bei klick:
     const handleClick = (e: Event) => {
@@ -141,9 +149,13 @@ export default function Header() {
                     <LoginModal />
                   </li>
                 )}
-                <li>
-                  <NavLink to="/admin-bereich">Admin Bereich</NavLink>
-                </li>
+                {role === "admin" ? (
+                  <li>
+                    <NavLink to="/admin-bereich" className="text-[orange]">
+                      Admin Bereich
+                    </NavLink>{" "}
+                  </li>
+                ) : null}
               </ul>
             </nav>
           </div>

@@ -10,7 +10,7 @@ type LoginDTO = z.infer<typeof authLoginSchema>;
 /* ENV HELPERS */
 const ACCESS_TTL_SEC = Number(process.env.ACCESS_TOKEN_TTL ?? 900);
 const JWT_SECRET = process.env.JWT_SECRET!;
-const JWT_ISSUER = process.env.JWT_ISSUER ?? "WDG024";
+const JWT_ISSUER = process.env.JWT_ISSUER ?? "Raumbasis";
 
 // SignAccessToken
 const signAccessToken = (payload: object) =>

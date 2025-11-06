@@ -22,7 +22,7 @@ function validateLogin(data: Record<string, string>) {
 }
 
 export default function LoginForm() {
-  const { myToken, setMyToken } = use(GesamtseitenContext);
+  const { myToken, setMyToken, role, setRole } = use(GesamtseitenContext);
   const navigate = useNavigate();
 
   function goToRegister() {
@@ -68,8 +68,10 @@ export default function LoginForm() {
 
       const result = await res.json();
       console.log("Request OK. Server-Response ist: ", result);
+      console.log(result.user.roles[0]);
       // Token ERSTMAL aus response setzen:
       setMyToken(result.token);
+      setRole(result.user.roles[0]);
       alert("Token gesetzt! Admin Bereich jetzt verfügbar!");
       // Schließe Modal (wenn vorhanden)
       (
