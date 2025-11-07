@@ -81,8 +81,6 @@ export default function LoginForm() {
       };
       await fetchMe();
 
-      alert("SAMPLE Token gesetzt! Admin Bereich jetzt verfügbar!");
-
       // Schließe Modal (wenn vorhanden)
       (
         document.getElementById("loginModal") as HTMLDialogElement | null

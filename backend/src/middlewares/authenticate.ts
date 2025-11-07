@@ -1,10 +1,10 @@
 import type { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 
-const secret = process.env.JWT_SECRET;
+const secret = process.env.ACCESS_JWT_SECRET;
 
 if (!secret) {
-  console.log("Authentificate.ts-Problem. JWT_SECRET ist missing.");
+  console.log("Moin, hier fehlt das ACCESS_JWT_SECRET");
   process.exit(1);
 }
 
