@@ -4,22 +4,24 @@ import { GesamtseitenContext } from "../context/GesamtseitenContext";
 
 export default function ProtectedLayout() {
   const navigate = useNavigate();
-  // Hier die Lösung der ganzen Schei..e: Das Ausrufezeichen "!" am Ende...
-  const { myToken } = use(GesamtseitenContext)!;
+  const { userData } = use(GesamtseitenContext)!;
 
-  // Mein Token für "Admin Bereich" muss vorhanden sein:
-  const token = myToken;
+  // Wenn userData vorhanden → hole Rolle
+  const role = userData?.roles?.[0];
 
   useEffect(() => {
-    if (!token) {
-      console.log(
-        "Erst anmelden! Dieser Bereich ist geschützt. Siehe 'ProdectedLayout.tsx' Datei"
-      );
+    // WARTEN bis fetchMe fertig ist → daher nur prüfen, wenn userData nicht null
+    if (userData && !role) {
+      console.log("Kein Zugriff → Weiterleitung");
       navigate("/login");
     }
-  }, [token, navigate]);
+  }, [userData, role, navigate]);
 
-  if (!token) return null;
+  // Wenn Daten noch nicht geladen → Ladeanzeige (oder null)
+  if (!userData) return <p className="p-4">⏳ Lade Benutzer...</p>;
+
+  // Wenn Benutzer existiert aber keine Role hat, dann tschüss:
+  if (!role) return null;
 
   return <Outlet />;
 }

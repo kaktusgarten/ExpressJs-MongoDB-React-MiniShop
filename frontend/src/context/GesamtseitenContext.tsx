@@ -4,11 +4,13 @@ import { useState, createContext } from "react";
 
 type KontextType = {
   sampleText: string;
-  setSampleText: any; // jaja ..
+  setSampleText: any;
   myToken: string | null;
-  setMyToken: any; // jajaja ..
+  setMyToken: any;
   role: string | null;
   setRole: any;
+  userData: any | null;
+  setUserData: any;
 };
 
 export const GesamtseitenContext = createContext<KontextType | null>(null);
@@ -24,6 +26,7 @@ export default function GesamtseitenContextProvider({
   );
   const [myToken, setMyToken] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
+  const [userData, setUserData] = useState<any | null>(null);
 
   // Global verfügbare Daten hier nochmal eintragen:
   const values = {
@@ -33,6 +36,8 @@ export default function GesamtseitenContextProvider({
     setMyToken,
     role,
     setRole,
+    userData,
+    setUserData,
   };
 
   return (

@@ -4,8 +4,9 @@ import { GesamtseitenContext } from "../context/GesamtseitenContext";
 import LoginModal from "./LoginModal";
 
 export default function Header() {
-  const { myToken, setMyToken, role, setRole } = use(GesamtseitenContext);
+  const { userData, setUserData } = use(GesamtseitenContext);
 
+  // Logout
   const logout = async () => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
@@ -17,8 +18,8 @@ export default function Header() {
       });
       const data = await res.json();
       console.log(data);
-      setMyToken(null);
-      setRole(null);
+      setUserData(null);
+      alert("Du wurdest abgemeldet");
     } catch (error) {
       console.log(error);
     }
@@ -31,6 +32,7 @@ export default function Header() {
   const [categories, setCategories] = useState<Category[] | null>(null);
 
   useEffect(() => {
+    // FETCH CATEGORIES (immer)
     const fetchCategories = async () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/categories`);
@@ -42,14 +44,7 @@ export default function Header() {
     };
     fetchCategories();
 
-    // const fetchMe = async () => {
-    //   const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`);
-    //   const data = await res.json();
-    //   console.log(data);
-    // };
-    // fetchMe();
-
-    // Menu schließt alle Submenüs bei klick:
+    // Menu schließt alle Submenüs bei Klick:
     const handleClick = (e: Event) => {
       const target = e.target as HTMLElement;
       if (target.closest("a")) {
@@ -143,7 +138,7 @@ export default function Header() {
           <div className="min-h-[52px]">
             <nav>
               <ul className="menu menu-horizontal bg-black rounded-box lg:mb-64  absolute">
-                {myToken ? (
+                {userData ? (
                   <li>
                     <a onClick={logout}>Logout</a>
                   </li>
@@ -152,13 +147,13 @@ export default function Header() {
                     <LoginModal />
                   </li>
                 )}
-                {role === "admin" ? (
+                {userData?.roles?.[0] === "admin" && (
                   <li>
                     <NavLink to="/admin-bereich" className="text-[orange]">
                       Admin Bereich
-                    </NavLink>{" "}
+                    </NavLink>
                   </li>
-                ) : null}
+                )}
               </ul>
             </nav>
           </div>

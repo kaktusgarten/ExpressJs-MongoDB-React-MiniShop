@@ -22,7 +22,7 @@ function validateLogin(data: Record<string, string>) {
 }
 
 export default function LoginForm() {
-  const { myToken, setMyToken, role, setRole } = use(GesamtseitenContext);
+  const { userData, setUserData } = use(GesamtseitenContext);
   const navigate = useNavigate();
 
   function goToRegister() {
@@ -48,8 +48,6 @@ export default function LoginForm() {
         input: data,
       };
     }
-
-    // Wenn alles okay ist:
     try {
       // Optional: Warten, um isPending zu testen
       // await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -68,9 +66,20 @@ export default function LoginForm() {
 
       const result = await res.json();
 
-      // Token ERSTMAL aus response setzen:
-      setMyToken("SAMPLTOKEN");
-      setRole("admin");
+      // FETCH ME und schreibe in Gesamtseitencontext
+      const fetchMe = async () => {
+        try {
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+            credentials: "include", //  Weil Cookie genutzt wird
+          });
+          const data = await res.json();
+          console.log(`User-Daten stehen jetzt im Gesamtseitencontext!`);
+          setUserData(data.user);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      await fetchMe();
 
       alert("SAMPLE Token gesetzt! Admin Bereich jetzt verfügbar!");
 
