@@ -1,10 +1,10 @@
-import type { RequestHandler } from 'express';
-import jwt from 'jsonwebtoken';
+import type { RequestHandler } from "express";
+import jwt from "jsonwebtoken";
 
 const secret = process.env.JWT_SECRET;
 
 if (!secret) {
-  console.log('missing access token secret');
+  console.log("Authentificate.ts-Problem. JWT_SECRET ist missing.");
   process.exit(1);
 }
 
@@ -12,12 +12,12 @@ const authenticate: RequestHandler = (req, res, next) => {
   const token = req.cookies.accessToken;
 
   if (!token)
-    return next(new Error('Not authenticated', { cause: { status: 401 } }));
+    return next(new Error("Not authenticated", { cause: { status: 401 } }));
 
   try {
     const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
     if (!decoded.jti)
-      return next(new Error('Invalid token', { cause: { status: 401 } }));
+      return next(new Error("Invalid token", { cause: { status: 401 } }));
 
     const user = {
       id: decoded.jti,
@@ -29,10 +29,10 @@ const authenticate: RequestHandler = (req, res, next) => {
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       return next(
-        new Error('Expired access token', { cause: { status: 401 } })
+        new Error("Expired access token", { cause: { status: 401 } })
       );
     }
-    return next(new Error('Invalid token', { cause: { status: 401 } }));
+    return next(new Error("Invalid token", { cause: { status: 401 } }));
   }
 };
 

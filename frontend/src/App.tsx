@@ -22,9 +22,9 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registrierung" element={<RegistrierungPage />} />
           <Route path="/warenkorb" element={<WarenkorbPage />} />
-          <Route path="/kontodaten" element={<AccountPage />} />
           <Route element={<ProtectedLayout />}>
             <Route path="/admin-bereich" element={<AdminBereichPage />} />
+            <Route path="/kontodaten" element={<AccountPage />} />
           </Route>
           <Route path="/nicht-gefunden" element={<NotFoundPage />} />
           <Route path="*" element={<NotFoundPage />} />
