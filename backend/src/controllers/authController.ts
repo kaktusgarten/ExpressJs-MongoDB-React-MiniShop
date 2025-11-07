@@ -1,27 +1,22 @@
 import type { RequestHandler } from "express";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { User } from "#models";
+import type { z } from "zod";
+import type { authLoginSchema, authRegisterSchema } from "#schemas";
+import {
+  signAccessToken,
+  signRefreshToken,
+  accessCookieOpts,
+  refreshCookieOpts,
+} from "#utils";
 
-// ZOD inferred ########################
+/* ---------- DTOs inferred from Zod ---------- */
 type RegisterDTO = z.infer<typeof authRegisterSchema>;
 type LoginDTO = z.infer<typeof authLoginSchema>;
 
-/* ENV HELPERS */
-const ACCESS_TTL_SEC = Number(process.env.ACCESS_TOKEN_TTL ?? 900);
-const JWT_SECRET = process.env.JWT_SECRET!;
-const JWT_ISSUER = process.env.JWT_ISSUER ?? "Raumbasis";
-
-// SignAccessToken
-const signAccessToken = (payload: object) =>
-  jwt.sign(payload, JWT_SECRET, {
-    expiresIn: `${ACCESS_TTL_SEC}s`,
-    issuer: JWT_ISSUER,
-  });
-
-// REGISTRIEREN ########################
+/* ---------------- REGISTER ---------------- */
 export const register: RequestHandler = async (req, res) => {
-  // Keine Ahnung wie das im Sample läuft (Siehe: Lektion 10_Authentication_Autorization)
   const {
     firstName,
     lastName,
@@ -34,14 +29,18 @@ export const register: RequestHandler = async (req, res) => {
     password,
   } = req.body;
 
-  const userExist = await User.exists({ email });
-
-  if (userExist) {
-    throw new Error("Registration failed", { cause: { status: 400 } });
+  // Prüfen, ob User bereits existiert
+  const exists = await User.exists({ email });
+  if (exists) {
+    throw new Error("registration failed, user Exists", {
+      cause: { status: 400 },
+    });
   }
 
+  // Passwort hashen
   const hash = await bcrypt.hash(password, 10);
 
+  // User erstellen
   const user = await User.create({
     firstName,
     lastName,
@@ -54,33 +53,26 @@ export const register: RequestHandler = async (req, res) => {
     password: hash,
   });
 
-  const token = signAccessToken({
+  // AccessToken generieren
+  const accessToken = signAccessToken({
     jti: user._id.toString(),
     roles: user.roles,
   });
 
-  //   res
-  //     .status(201)
-  //     .json({ message: 'registered successfully', user: user, token: token });
-
-  // email verifizierung
-  res
-    .cookie("accessToken", token, {
-      httpOnly: true,
-      maxAge: Number(process.env.ACCESS_TOKEN_TTL) * 1000,
-      sameSite: "lax", // Für Entwicklung, sonst "none"
-      // secure: true  // Für Production
-    })
-    .status(201)
-    .json({
-      mesage: "registered successfully",
-      user: user,
-      token,
-    });
+  // AccessToken als httpOnly Cookie setzen
+  res.cookie("accessToken", accessToken, accessCookieOpts).status(201).json({
+    message: "registered successfully",
+    user,
+    token: accessToken,
+  });
 };
 
-// LOGIN ###############################
-export const login: RequestHandler = async (req, res) => {
+/* ---------------- LOGIN ---------------- */
+export const login: RequestHandler<
+  unknown,
+  { message: string; user: any; accessToken: string; refreshToken: string },
+  LoginDTO
+> = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email }).select("+password");
@@ -93,44 +85,117 @@ export const login: RequestHandler = async (req, res) => {
     throw new Error("Invalid credentials", { cause: { status: 400 } });
   }
 
-  const token = signAccessToken({
+  const accessToken = signAccessToken({
     jti: user._id.toString(),
     roles: user.roles,
+    ver: user.tokenVersion,
+  });
+
+  const refreshToken = signRefreshToken({
+    jti: user._id.toString(),
+    roles: user.roles,
+    ver: user.tokenVersion,
   });
 
   const { password: _, ...userWithoutPassword } = user.toObject();
 
   res
-    .cookie("accessToken", token, {
-      httpOnly: true,
-      maxAge: ACCESS_TTL_SEC * 1000,
-      sameSite: "lax", // nur für entwicklung, sonst "none"
-      // secure: true, // Production
-    })
-    .status(201)
+    .cookie("accessToken", accessToken, accessCookieOpts)
+    .cookie("refreshToken", refreshToken, refreshCookieOpts)
+    .status(200)
     .json({
-      message: "Logged in",
-      // user: userWithoutPassword,  // KEINE USER DATEN MITSCHICKEN BEI LOGIN!
-      // token,  // Macht man nicht. Warum auch.. (War nur für uns zur ansicht)
+      message: "logged in",
+      user: userWithoutPassword,
+      accessToken,
+      refreshToken,
     });
 };
 
-// LOGOUT ##############################
-export const logout: RequestHandler = async (req, res) => {
-  res.clearCookie("accessToken").json({ message: "successfully logged out" });
+/* ---------------- REFRESH ---------------- */
+export const refresh: RequestHandler<
+  unknown,
+  { message: string; accessToken: string; refreshToken: string },
+  unknown
+> = async (req, res) => {
+  const token = req.cookies?.refreshToken;
+
+  if (!token) {
+    throw new Error("No refresh token", { cause: { status: 401 } });
+  }
+
+  let payload: jwt.JwtPayload & { jti: string; ver?: number };
+
+  try {
+    payload = jwt.verify(token, process.env.REFRESH_JWT_SECRET!) as any;
+  } catch {
+    throw new Error("Invalid refresh token", { cause: { status: 401 } });
+  }
+
+  const user = await User.findById(payload.jti).select("+tokenVersion");
+  if (!user) {
+    throw new Error("something went wrong during /refresh", {
+      cause: { status: 401 },
+    });
+  }
+
+  if (payload.ver !== undefined && payload.ver !== user.tokenVersion) {
+    throw new Error("refresh token revoked", { cause: { status: 401 } });
+  }
+
+  const newAccess = signAccessToken({
+    jti: user._id.toString(),
+    roles: user.roles,
+    ver: user.tokenVersion,
+  });
+
+  const newRefresh = signRefreshToken({
+    jti: user._id.toString(),
+    roles: user.roles,
+  });
+
+  res
+    .cookie("accessToken", newAccess, accessCookieOpts)
+    .cookie("refreshToken", newRefresh, refreshCookieOpts)
+    .json({
+      message: "refreshed",
+      accessToken: newAccess,
+      refreshToken: newRefresh,
+    });
 };
 
-// ME ##################################
-// prettier-ignore
-export const me: RequestHandler<unknown, { user: any }> =
-  async (req, res) => {
+/* ---------------- LOGOUT ---------------- */
+export const logout: RequestHandler = async (req, res) => {
+  res
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
+    .json({ message: "logged out" });
+};
+
+/* ---------------- LOGOUT-ALL ---------------- */
+export const logoutAll: RequestHandler = async (req, res) => {
   const id = req.user?.id;
 
-  const user = await User.findById(id)
-
-  if(!user) {
-    throw new Error('User not found', {cause: {status: 404}})
+  if (!id) {
+    throw new Error("unauthorized", { cause: { status: 401 } });
   }
- 
-  res.json({user})
+
+  await User.findByIdAndUpdate(id, { $inc: { tokenVersion: 1 } });
+
+  res
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
+    .json({ message: "logged out from all devices" });
+};
+
+/* ---------------- ME ---------------- */
+export const me: RequestHandler<unknown, { user: any }> = async (req, res) => {
+  const id = req.user?.id;
+
+  const user = await User.findById(id);
+
+  if (!user) {
+    throw new Error("User not found", { cause: { status: 404 } });
+  }
+
+  res.json({ user });
 };

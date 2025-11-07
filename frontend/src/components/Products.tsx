@@ -18,6 +18,7 @@ export default function Products() {
         });
         const data = await res.json();
         setProducts(data);
+        console.log(data);
       } catch (error) {
         console.log("Fehler ist aufgetreten: " + error);
       }

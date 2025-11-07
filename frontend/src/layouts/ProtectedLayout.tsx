@@ -18,7 +18,7 @@ export default function ProtectedLayout() {
   }, [userData, role, navigate]);
 
   // Wenn Daten noch nicht geladen → Ladeanzeige (oder null)
-  if (!userData) return <p className="p-4">⏳ Lade Benutzer...</p>;
+  if (!userData) return <p className="p-4">⏳ Bitte neu anmelden...</p>;
 
   // Wenn Benutzer existiert aber keine Role hat, dann tschüss:
   if (!role) return null;

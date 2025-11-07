@@ -53,6 +53,11 @@ const userSchema = new Schema(
       type: [String],
       default: ["user"],
     },
+    tokenVersion: {
+      type: Number,
+      default: 0,
+      select: false,
+    },
     // Neues optionales Feld
     profileImage: {
       type: String,

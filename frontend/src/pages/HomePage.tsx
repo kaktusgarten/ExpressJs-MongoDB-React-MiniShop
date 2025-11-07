@@ -9,7 +9,8 @@ export default function HomePage() {
     <>
       <main className="p-4">
         <h2 className="text-xl mb-6 text-[orange]">
-          Hallo {userData?.firstName}!
+          Hallo{" "}
+          {userData?.firstName ?? "lieber Gastbesucher - Bitte melde dich an"}!
         </h2>
         <Products />
       </main>

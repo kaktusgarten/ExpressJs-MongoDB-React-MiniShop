@@ -1,10 +1,11 @@
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { useEffect, useState, use } from "react";
 import { GesamtseitenContext } from "../context/GesamtseitenContext";
 import LoginModal from "./LoginModal";
 
 export default function Header() {
   const { userData, setUserData } = use(GesamtseitenContext);
+  const navigate = useNavigate();
 
   // Logout
   const logout = async () => {
@@ -20,6 +21,7 @@ export default function Header() {
       console.log(data);
       setUserData(null);
       alert("Du wurdest abgemeldet");
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
