@@ -68,8 +68,8 @@ export const register: RequestHandler = async (req, res) => {
     .cookie("accessToken", token, {
       httpOnly: true,
       maxAge: Number(process.env.ACCESS_TOKEN_TTL) * 1000,
-      // sameSite,
-      // secure: true
+      sameSite: "lax", // Für Entwicklung, sonst "none"
+      // secure: true  // Für Production
     })
     .status(201)
     .json({
@@ -104,11 +104,13 @@ export const login: RequestHandler = async (req, res) => {
     .cookie("accessToken", token, {
       httpOnly: true,
       maxAge: ACCESS_TTL_SEC * 1000,
+      sameSite: "lax", // nur für entwicklung, sonst "none"
+      // secure: true, // Production
     })
     .status(201)
     .json({
       mesage: "logged in",
-      user: userWithoutPassword,
+      // user: userWithoutPassword,  // KEINE USER DATEN MITSCHICKEN BEI LOGIN!
       token,
     });
 };

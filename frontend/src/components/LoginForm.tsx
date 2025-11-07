@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useActionState, use } from "react";
 import { GesamtseitenContext } from "../context/GesamtseitenContext";
 
@@ -51,13 +51,13 @@ export default function LoginForm() {
 
     // Wenn alles okay ist:
     try {
-      console.log("ABSENDEN:", data);
       // Optional: Warten, um isPending zu testen
       // await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const res = await fetch(`http://localhost:3000/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // <--- DAS FEHLTE
         body: JSON.stringify(data),
       });
 
@@ -67,12 +67,13 @@ export default function LoginForm() {
       }
 
       const result = await res.json();
-      console.log("Request OK. Server-Response ist: ", result);
-      console.log(result.user.roles[0]);
+
       // Token ERSTMAL aus response setzen:
-      setMyToken(result.token);
-      setRole(result.user.roles[0]);
-      alert("Token gesetzt! Admin Bereich jetzt verfügbar!");
+      setMyToken("SAMPLTOKEN");
+      setRole("admin");
+
+      alert("SAMPLE Token gesetzt! Admin Bereich jetzt verfügbar!");
+
       // Schließe Modal (wenn vorhanden)
       (
         document.getElementById("loginModal") as HTMLDialogElement | null

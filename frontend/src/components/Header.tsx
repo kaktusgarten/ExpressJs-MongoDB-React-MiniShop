@@ -10,6 +10,10 @@ export default function Header() {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
         method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       const data = await res.json();
       console.log(data);
@@ -32,7 +36,6 @@ export default function Header() {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/categories`);
         const data = await res.json();
         setCategories(data);
-        console.log(data);
       } catch (error) {
         console.log(error);
       }
