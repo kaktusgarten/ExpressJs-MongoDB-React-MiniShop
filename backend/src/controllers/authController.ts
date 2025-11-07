@@ -109,9 +109,9 @@ export const login: RequestHandler = async (req, res) => {
     })
     .status(201)
     .json({
-      mesage: "logged in",
+      message: "Logged in",
       // user: userWithoutPassword,  // KEINE USER DATEN MITSCHICKEN BEI LOGIN!
-      token,
+      // token,  // Macht man nicht. Warum auch.. (War nur für uns zur ansicht)
     });
 };
 
