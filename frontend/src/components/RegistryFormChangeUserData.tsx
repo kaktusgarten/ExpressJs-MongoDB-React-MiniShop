@@ -255,17 +255,11 @@ export default function RegistrationFormChangeUserData() {
           className="btn btn-primary mt-4 w-full"
           disabled={isPending}
         >
-          {isPending ? "Registrieren..." : "Registrieren"}
+          {isPending ? "wird gespeichert..." : "Speichern"}
         </button>
         {formState.errors?.button && (
           <p className="text-sm text-red-400 mt-1">{formState.errors.button}</p>
         )}
-
-        <p className="mt-4 text-center">
-          <Link to="/login">
-            Bereits ein Konto? <span className="underline">Hier anmelden!</span>
-          </Link>
-        </p>
       </fieldset>
     </form>
   );

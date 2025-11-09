@@ -4,7 +4,7 @@ import { GesamtseitenContext } from "../context/GesamtseitenContext";
 import LoginModal from "./LoginModal";
 
 export default function Header() {
-  const { userData, setUserData } = use(GesamtseitenContext);
+  const { userData, setUserData, setEinkaufswagen } = use(GesamtseitenContext);
   const navigate = useNavigate();
 
   // Logout
@@ -20,6 +20,7 @@ export default function Header() {
       const data = await res.json();
       console.log(data);
       setUserData(null);
+      setEinkaufswagen(null);
       alert("Du wurdest abgemeldet");
       navigate("/");
     } catch (error) {

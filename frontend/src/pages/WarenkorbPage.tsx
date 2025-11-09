@@ -1,6 +1,7 @@
 import Warenkorb from "../components/Warenkorb";
 
 const WarenkorbPage = () => {
+
   return (
     <>
       <main className="p-4">

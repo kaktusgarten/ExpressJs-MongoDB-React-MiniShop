@@ -4,13 +4,15 @@ import { useState, createContext } from "react";
 
 type KontextType = {
   sampleText: string;
-  setSampleText: any;
+  setSampleText: (sampleText: string) => void;
   myToken: string | null;
-  setMyToken: any;
+  setMyToken: (myToken: string) => void;
   role: string | null;
-  setRole: any;
+  setRole: (role: any) => void;
   userData: any | null;
-  setUserData: any;
+  setUserData: (userData: any) => void;
+  einkaufswagen: object | null;
+  setEinkaufswagen: (setEinkaufswagen: Object) => void;
 };
 
 export const GesamtseitenContext = createContext<KontextType | null>(null);
@@ -27,6 +29,7 @@ export default function GesamtseitenContextProvider({
   const [myToken, setMyToken] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [userData, setUserData] = useState<any | null>(null);
+  const [einkaufswagen, setEinkaufswagen] = useState<object | null>(null);
 
   // Global verfügbare Daten hier nochmal eintragen:
   const values = {
@@ -38,6 +41,8 @@ export default function GesamtseitenContextProvider({
     setRole,
     userData,
     setUserData,
+    einkaufswagen,
+    setEinkaufswagen,
   };
 
   return (
