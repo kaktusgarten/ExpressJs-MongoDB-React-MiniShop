@@ -1,9 +1,7 @@
 import { useActionState, useState, useEffect } from "react";
 
-// Validierungsfunktion
 function validateRegistration(data: Record<string, any>) {
   const errors: Record<string, string> = {};
-
   if (!data.firstName) errors.firstName = "Vorname ist erforderlich.";
   if (!data.lastName) errors.lastName = "Nachname ist erforderlich.";
   if (!data.email) errors.email = "E-Mail ist erforderlich.";
@@ -13,28 +11,40 @@ function validateRegistration(data: Record<string, any>) {
   if (!data.city) errors.city = "Stadt ist erforderlich.";
   if (data.phone && !/^[0-9+\s()-]{6,}$/.test(data.phone))
     errors.phone = "Bitte gib eine gültige Telefonnummer ein.";
-
   return errors;
 }
 
-export default function FormChangeUserDataAdmin({ user, updateLocalUser }) {
+export default function FormChangeUserDataAdmin({
+  user,
+  updateLocalUser,
+  closeForm, // <-- Funktion, um das Formular zu schließen
+}) {
   const [formValues, setFormValues] = useState({
     ...user,
     roles: user.roles ?? [],
   });
 
-  // Immer, wenn user Prop sich ändert → FormState aktualisieren
+  // Immer synchronisieren, wenn user Prop sich ändert
   useEffect(() => {
-    setFormValues((prev) => ({
-      ...user,
-      roles: user.roles ?? prev.roles ?? [],
-    }));
+    setFormValues({ ...user, roles: user.roles ?? [] });
   }, [user]);
+
+  const [formState, formAction, isPending] = useActionState(submitAction, {});
+
+  const possibleRoles = ["user", "admin", "moderator"];
+  const fieldLabels: Record<string, string> = {
+    firstName: "Vorname",
+    lastName: "Nachname",
+    email: "E-Mail",
+    street: "Straße",
+    houseNumber: "Hausnummer",
+    postalCode: "PLZ",
+    city: "Stadt",
+    phone: "Telefonnummer",
+  };
 
   async function submitAction(_prevState: any, formData: FormData) {
     const data = Object.fromEntries(formData.entries()) as Record<string, any>;
-
-    // Sicherstellen, dass roles aus formValues verwendet werden
     data.roles = formValues.roles ?? [];
 
     const validationErrors = validateRegistration(data);
@@ -52,8 +62,11 @@ export default function FormChangeUserDataAdmin({ user, updateLocalUser }) {
       if (!res.ok) throw new Error("Update fehlgeschlagen");
 
       const updatedUser = await res.json();
-      updateLocalUser(updatedUser); // User in Übersicht aktualisieren
-      setFormValues({ ...updatedUser, roles: updatedUser.roles ?? [] }); // FormState direkt aktualisieren
+      updateLocalUser(updatedUser); // Parent aktualisieren
+      setFormValues({ ...updatedUser, roles: updatedUser.roles ?? [] }); // Formular synchronisieren
+
+      // Formular nach Speichern schließen
+      if (closeForm) closeForm();
 
       return {};
     } catch (error) {
@@ -67,26 +80,12 @@ export default function FormChangeUserDataAdmin({ user, updateLocalUser }) {
     }
   }
 
-  const [formState, formAction, isPending] = useActionState(submitAction, {});
-
-  const possibleRoles = ["user", "admin", "moderator"];
-
-  const fieldLabels: Record<string, string> = {
-    firstName: "Vorname",
-    lastName: "Nachname",
-    email: "E-Mail",
-    street: "Straße",
-    houseNumber: "Hausnummer",
-    postalCode: "PLZ",
-    city: "Stadt",
-    phone: "Telefonnummer",
-  };
-
   return (
     <form action={formAction} className="userDataForm">
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
         <legend className="fieldset-legend">Benutzer bearbeiten</legend>
 
+        {/* Standardfelder */}
         {Object.entries(fieldLabels).map(([field, label]) => (
           <div key={field} className="mb-2">
             <label className="label mt-2">{label}</label>
@@ -105,7 +104,7 @@ export default function FormChangeUserDataAdmin({ user, updateLocalUser }) {
           </div>
         ))}
 
-        {/* Rollen als Checkboxen */}
+        {/* Rollen Checkboxen */}
         <div className="mt-4">
           <span className="label mb-2 block">Rollen</span>
           <div className="flex gap-4">
@@ -116,7 +115,7 @@ export default function FormChangeUserDataAdmin({ user, updateLocalUser }) {
               >
                 <input
                   type="checkbox"
-                  className="checkbox checkbox-primary"
+                  className="checkbox"
                   checked={formValues.roles?.includes(role) ?? false}
                   disabled={isPending}
                   onChange={(e) => {
@@ -134,7 +133,6 @@ export default function FormChangeUserDataAdmin({ user, updateLocalUser }) {
                       });
                     }
                   }}
-                  name="roles"
                 />
                 {role}
               </label>
@@ -155,7 +153,6 @@ export default function FormChangeUserDataAdmin({ user, updateLocalUser }) {
         >
           {isPending ? "wird gespeichert..." : "Speichern"}
         </button>
-
         {formState.errors?.button && (
           <p className="text-sm text-red-400 mt-2">{formState.errors.button}</p>
         )}

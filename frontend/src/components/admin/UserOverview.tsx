@@ -89,6 +89,9 @@ export default function UserOverview() {
                         )
                       );
                     }}
+                    closeForm={() =>
+                      setOpenForms((prev) => ({ ...prev, [user._id]: false }))
+                    }
                   />
                 </div>
               )}
