@@ -71,24 +71,25 @@ export default function FormChangeUserDataAdmin({ user, updateLocalUser }) {
 
   const possibleRoles = ["user", "admin", "moderator"];
 
+  const fieldLabels: Record<string, string> = {
+    firstName: "Vorname",
+    lastName: "Nachname",
+    email: "E-Mail",
+    street: "Straße",
+    houseNumber: "Hausnummer",
+    postalCode: "PLZ",
+    city: "Stadt",
+    phone: "Telefonnummer",
+  };
+
   return (
     <form action={formAction} className="userDataForm">
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
         <legend className="fieldset-legend">Benutzer bearbeiten</legend>
 
-        {/* Standardfelder */}
-        {[
-          "firstName",
-          "lastName",
-          "email",
-          "street",
-          "houseNumber",
-          "postalCode",
-          "city",
-          "phone",
-        ].map((field) => (
+        {Object.entries(fieldLabels).map(([field, label]) => (
           <div key={field} className="mb-2">
-            <label className="label mt-2">{field}</label>
+            <label className="label mt-2">{label}</label>
             <input
               value={formValues[field] ?? ""}
               name={field}
