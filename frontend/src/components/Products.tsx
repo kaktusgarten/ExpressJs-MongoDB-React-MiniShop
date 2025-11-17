@@ -66,13 +66,20 @@ export default function Products() {
           : "Produkte:"}
       </h2>
 
-      <div className="grid md:grid-cols-4 gap-5 pt-3">
+      <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-5 pt-3">
         {products.map((product) => (
+          // -- PRODUKT KACHEL --
           <article
             key={product._id}
             className="border p-6 grid content-between"
           >
             <div className="pb-6">
+              <img
+                src={product.image_url[0] ?? "/img/header-image.png"}
+                alt={product.name}
+                className="h-[200px] w-[100%] object-cover bg-black mb-5"
+              ></img>
+
               <h3 className="text-xl font-bold">{product.name}</h3>
               <p>{product.description}</p>
               <p className="font-semibold">Preis: {product.price} €</p>

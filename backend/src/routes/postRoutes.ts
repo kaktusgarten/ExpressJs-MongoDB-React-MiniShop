@@ -1,3 +1,4 @@
+import { Router } from 'express';
 import {
   createPost,
   deletePost,
@@ -8,7 +9,6 @@ import {
 import { authenticate, authorize, upload, validateBodyZod } from '#middlewares';
 import { Post } from '#models';
 import { postInputSchema } from '#schemas';
-import { Router } from 'express';
 
 const postRoutes = Router();
 

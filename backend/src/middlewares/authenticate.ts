@@ -10,6 +10,8 @@ if (!secret) {
 
 const authenticate: RequestHandler = (req, res, next) => {
   const token = req.cookies.accessToken;
+  console.log("authenticate middleware, token: ");
+  console.log(token);
 
   if (!token)
     return next(new Error("Not authenticated", { cause: { status: 401 } }));

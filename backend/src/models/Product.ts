@@ -5,6 +5,7 @@ interface IProduct extends Document {
   description: string;
   price: number;
   categoryId: Types.ObjectId;
+  image_url: string[];
 }
 
 const productSchema = new Schema<IProduct>(
@@ -16,6 +17,10 @@ const productSchema = new Schema<IProduct>(
       type: Schema.Types.ObjectId,
       ref: "Category",
       required: true,
+    },
+    image_url: {
+      type: [String],
+      required: [false, "image is not required at the moment..."],
     },
   },
   { timestamps: true }

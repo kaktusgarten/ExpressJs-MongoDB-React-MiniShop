@@ -2,9 +2,15 @@ import type { RequestHandler } from "express";
 import { Product, Category } from "#models";
 import mongoose from "mongoose";
 
+
+
+
+
 // CREATE Product ###############
 export const createProduct: RequestHandler = async (req, res) => {
   const { name, description, price, category } = req.body;
+  const files = (req.files as Express.Multer.File[]) || [];
+  const image_url = files.map((f) => f.path);
 
   if (!name || !description || !price || !category) {
     res.status(400).json({ message: "Missing required fields" });
@@ -23,13 +29,21 @@ export const createProduct: RequestHandler = async (req, res) => {
     description,
     price,
     categoryId: categoryDoc._id,
+    image_url : image_url,
   });
+
+  console.log('cloudinary upload results', files);
+  res.status(201).json(newProduct);
 
   // Kategorie-Name gleich mit zurückgeben (populate)
   const populatedProduct = await newProduct.populate("categoryId", "name");
 
   res.status(201).json(populatedProduct);
 };
+
+
+
+
 
 // GET ALL Products ################
 export const getAllProducts: RequestHandler = async (req, res) => {

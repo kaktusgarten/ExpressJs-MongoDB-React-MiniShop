@@ -1,5 +1,6 @@
-import { useActionState, useEffect } from "react";
-import { Link, useNavigate } from "react-router";
+import { useActionState, useEffect, use, useState } from "react";
+import { useNavigate } from "react-router";
+import { GesamtseitenContext } from "../context/GesamtseitenContext";
 
 // Validierungsfunktion
 function validateRegistration(data: Record<string, string>) {
@@ -42,19 +43,18 @@ function validateRegistration(data: Record<string, string>) {
 
 // FORM #######################################
 export default function RegistrationFormChangeUserData() {
+  const { userData } = use(GesamtseitenContext);
   const navigate = useNavigate();
+  const [disabled, setDisabled] = useState(true); // initial disabled
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`);
-        const data = res.json();
-        console.log(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-  }, []);
+  // Formular aktivieren
+  function enableInputForm() {
+    if (disabled === true) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }
 
   // Submit Action
   async function submitAction(_prevState: any, formData: FormData) {
@@ -71,7 +71,6 @@ export default function RegistrationFormChangeUserData() {
     try {
       console.log("Registriere Benutzer:", data);
 
-      // POST-Request an Backend
       const { password2, ...sendData } = data; // password2 nicht speichern
       const res = await fetch("http://localhost:3000/api/auth/register", {
         method: "POST",
@@ -101,19 +100,35 @@ export default function RegistrationFormChangeUserData() {
 
   const [formState, formAction, isPending] = useActionState(submitAction, {});
 
+  useEffect(() => {
+    console.log("UserDaten aus me im Login Form request");
+    console.log("userDATA: ", userData);
+  }, []);
+
   return (
-    <form action={formAction}>
+    <form action={formAction} className="userDataForm">
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
         <legend className="fieldset-legend">Deine Kontodaten</legend>
+
+        <button
+          type="button"
+          className="btn btn-primary mb-4"
+          onClick={enableInputForm}
+        >
+          Bearbeiten
+        </button>
 
         {/* Vorname */}
         <label className="label">Vorname</label>
         <input
-          defaultValue={formState.input?.firstName}
+          defaultValue={formState.input?.firstName ?? userData.firstName}
           name="firstName"
           className="input w-full"
+          style={{
+            border: isPending || disabled ? "1px solid gray" : "1px solid blue",
+          }}
           placeholder="Vorname"
-          disabled={isPending}
+          disabled={isPending || disabled}
         />
         {formState.errors?.firstName && (
           <p className="text-sm text-red-400 mt-1">
@@ -124,11 +139,14 @@ export default function RegistrationFormChangeUserData() {
         {/* Nachname */}
         <label className="label mt-2">Nachname</label>
         <input
-          defaultValue={formState.input?.lastName}
+          defaultValue={formState.input?.lastName ?? userData.lastName}
           name="lastName"
           className="input w-full"
+          style={{
+            border: isPending || disabled ? "1px solid gray" : "1px solid blue",
+          }}
           placeholder="Nachname"
-          disabled={isPending}
+          disabled={isPending || disabled}
         />
         {formState.errors?.lastName && (
           <p className="text-sm text-red-400 mt-1">
@@ -139,38 +157,48 @@ export default function RegistrationFormChangeUserData() {
         {/* E-Mail */}
         <label className="label mt-2">E-Mail</label>
         <input
-          defaultValue={formState.input?.email}
+          defaultValue={formState.input?.email ?? userData.email}
           name="email"
           type="email"
           className="input w-full"
+          style={{
+            border: isPending || disabled ? "1px solid gray" : "1px solid blue",
+          }}
           placeholder="E-Mail-Adresse"
-          disabled={isPending}
+          disabled={isPending || disabled}
           autoComplete="email"
         />
         {formState.errors?.email && (
           <p className="text-sm text-red-400 mt-1">{formState.errors.email}</p>
         )}
 
-        {/* Adresse */}
+        {/* Straße */}
         <label className="label mt-2">Straße</label>
         <input
-          defaultValue={formState.input?.street}
+          defaultValue={formState.input?.street ?? userData.street}
           name="street"
           className="input w-full"
+          style={{
+            border: isPending || disabled ? "1px solid gray" : "1px solid blue",
+          }}
           placeholder="Straße"
-          disabled={isPending}
+          disabled={isPending || disabled}
         />
         {formState.errors?.street && (
           <p className="text-sm text-red-400 mt-1">{formState.errors.street}</p>
         )}
 
+        {/* Hausnummer */}
         <label className="label mt-2">Hausnummer</label>
         <input
-          defaultValue={formState.input?.houseNumber}
+          defaultValue={formState.input?.houseNumber ?? userData.houseNumber}
           name="houseNumber"
           className="input w-full"
+          style={{
+            border: isPending || disabled ? "1px solid gray" : "1px solid blue",
+          }}
           placeholder="Hausnummer"
-          disabled={isPending}
+          disabled={isPending || disabled}
         />
         {formState.errors?.houseNumber && (
           <p className="text-sm text-red-400 mt-1">
@@ -178,13 +206,17 @@ export default function RegistrationFormChangeUserData() {
           </p>
         )}
 
+        {/* PLZ */}
         <label className="label mt-2">PLZ</label>
         <input
-          defaultValue={formState.input?.postalCode}
+          defaultValue={formState.input?.postalCode ?? userData.postalCode}
           name="postalCode"
           className="input w-full"
+          style={{
+            border: isPending || disabled ? "1px solid gray" : "1px solid blue",
+          }}
           placeholder="PLZ"
-          disabled={isPending}
+          disabled={isPending || disabled}
         />
         {formState.errors?.postalCode && (
           <p className="text-sm text-red-400 mt-1">
@@ -192,13 +224,17 @@ export default function RegistrationFormChangeUserData() {
           </p>
         )}
 
+        {/* Stadt */}
         <label className="label mt-2">Stadt</label>
         <input
-          defaultValue={formState.input?.city}
+          defaultValue={formState.input?.city ?? userData.city}
           name="city"
           className="input w-full"
+          style={{
+            border: isPending || disabled ? "1px solid gray" : "1px solid blue",
+          }}
           placeholder="Stadt"
-          disabled={isPending}
+          disabled={isPending || disabled}
         />
         {formState.errors?.city && (
           <p className="text-sm text-red-400 mt-1">{formState.errors.city}</p>
@@ -207,11 +243,14 @@ export default function RegistrationFormChangeUserData() {
         {/* Telefonnummer */}
         <label className="label mt-2">Telefonnummer (optional)</label>
         <input
-          defaultValue={formState.input?.phone}
+          defaultValue={formState.input?.phone ?? userData.phone}
           name="phone"
           className="input w-full"
+          style={{
+            border: isPending || disabled ? "1px solid gray" : "1px solid blue",
+          }}
           placeholder="Telefonnummer"
-          disabled={isPending}
+          disabled={isPending || disabled}
         />
         {formState.errors?.phone && (
           <p className="text-sm text-red-400 mt-1">{formState.errors.phone}</p>
@@ -224,8 +263,11 @@ export default function RegistrationFormChangeUserData() {
           name="password"
           type="password"
           className="input w-full"
+          style={{
+            border: isPending || disabled ? "1px solid gray" : "1px solid blue",
+          }}
           placeholder="Passwort"
-          disabled={isPending}
+          disabled={isPending || disabled}
           autoComplete="new-password"
         />
         {formState.errors?.password && (
@@ -240,8 +282,11 @@ export default function RegistrationFormChangeUserData() {
           name="password2"
           type="password"
           className="input w-full"
+          style={{
+            border: isPending || disabled ? "1px solid gray" : "1px solid blue",
+          }}
           placeholder="Passwort wiederholen"
-          disabled={isPending}
+          disabled={isPending || disabled}
           autoComplete="new-password"
         />
         {formState.errors?.password2 && (
@@ -250,10 +295,11 @@ export default function RegistrationFormChangeUserData() {
           </p>
         )}
 
+        {/* Submit */}
         <button
           type="submit"
           className="btn btn-primary mt-4 w-full"
-          disabled={isPending}
+          disabled={isPending || disabled}
         >
           {isPending ? "wird gespeichert..." : "Speichern"}
         </button>

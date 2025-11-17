@@ -1,6 +1,10 @@
 import type { RequestHandler } from 'express';
 import { Post } from '#models';
 
+
+
+
+
 // CREATE POST ####################################
 // prettier-ignore
 export const createPost: RequestHandler<
@@ -25,7 +29,11 @@ PostInputDTO> = async (
 
   // console.log('cloudinary upload results', files);
   res.status(201).json(newPost);
-};
+  };
+
+
+
+
 
 // GET ALL POSTS ####################################
 export const getAllPosts: RequestHandler = async (req, res) => {
