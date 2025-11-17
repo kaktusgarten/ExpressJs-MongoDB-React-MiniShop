@@ -1,7 +1,7 @@
-import { Types } from 'mongoose';
-import { z } from 'zod';
+import { Types } from "mongoose";
+import { z } from "zod";
 
-  export const userInputSchema = z
+export const userInputSchema = z
   .object({
     // Vorname (min. 2 Zeichen)
     firstName: z
@@ -39,35 +39,33 @@ import { z } from 'zod';
       .min(1, { message: "City is required" }),
 
     // Telefonnummer (optional, muss aber String sein)
-    phone: z
-      .string({ message: "Phone number must be a string" })
-      .optional(),
+    phone: z.string({ message: "Phone number must be a string" }).optional(),
+    roles: z.array(z.enum(["user", "admin", "moderator"])).optional(),
   })
   .strict();
 
-    export const postInputSchema = z
+export const postInputSchema = z
   .object({
     title: z
-      .string({ error: 'title must be a string' })
-      .min(5, { message: 'title must be at least 5 characters long' }),
+      .string({ error: "title must be a string" })
+      .min(5, { message: "title must be at least 5 characters long" }),
 
     content: z
-      .string({ error: 'Content must be a string' })
-      .min(5, { message: 'content must be at least 5 characters long' }),
+      .string({ error: "Content must be a string" })
+      .min(5, { message: "content must be at least 5 characters long" }),
 
     image_url: z.array(z.url()).optional(),
   })
   .strict();
 
-
 export const authLoginSchema = z
   .object({
     email: z
-      .string({ error: 'email must me a string' })
-      .email({ message: 'email must be a valid email address' }),
+      .string({ error: "email must me a string" })
+      .email({ message: "email must be a valid email address" }),
     password: z
-      .string({ error: 'password must be a string' })
-      .min(1, { message: 'password is required' }),
+      .string({ error: "password must be a string" })
+      .min(1, { message: "password is required" }),
   })
   .strict();
 
@@ -109,20 +107,18 @@ export const authRegisterSchema = z
       .min(1, { message: "City is required" }),
 
     // Telefonnummer (optional, muss aber String sein)
-    phone: z
-      .string({ message: "Phone number must be a string" })
-      .optional(),
+    phone: z.string({ message: "Phone number must be a string" }).optional(),
 
     // Passwort (Vorraussetzungen + Pflichtfeld)
     password: z
-      .string({ error: 'password must be a string' })
-      .min(8, { message: 'password must be at least 8 characters long' })
-      .max(64, { message: 'password must be at most 64 characters long' })
-      .regex(/[a-z]/, { message: 'password must include a lowercase letter' })
-      .regex(/[A-Z]/, { message: 'password must include an uppercase letter' })
-      .regex(/\d/, { message: 'password must include a number' })
+      .string({ error: "password must be a string" })
+      .min(8, { message: "password must be at least 8 characters long" })
+      .max(64, { message: "password must be at most 64 characters long" })
+      .regex(/[a-z]/, { message: "password must include a lowercase letter" })
+      .regex(/[A-Z]/, { message: "password must include an uppercase letter" })
+      .regex(/\d/, { message: "password must include a number" })
       .regex(/[^A-Za-z0-9\s]/, {
-        message: 'password must include a special character',
+        message: "password must include a special character",
       }),
   })
   .strict();
@@ -130,25 +126,24 @@ export const authRegisterSchema = z
 export const changePasswordSchema = z
   .object({
     currentPassword: z
-      .string({ error: 'password must be a string' })
-      .min(1, { message: 'current password is required' }),
+      .string({ error: "password must be a string" })
+      .min(1, { message: "current password is required" }),
     newPassword: z
-      .string({ error: 'password must be a string' })
-      .min(8, { message: 'password must be at least 8 characters long' })
-      .max(64, { message: 'password must be at most 64 characters long' })
-      .regex(/[a-z]/, { message: 'password must include a lowercase letter' })
-      .regex(/[A-Z]/, { message: 'password must include an uppercase letter' })
-      .regex(/\d/, { message: 'password must include a number' })
+      .string({ error: "password must be a string" })
+      .min(8, { message: "password must be at least 8 characters long" })
+      .max(64, { message: "password must be at most 64 characters long" })
+      .regex(/[a-z]/, { message: "password must include a lowercase letter" })
+      .regex(/[A-Z]/, { message: "password must include an uppercase letter" })
+      .regex(/\d/, { message: "password must include a number" })
       .regex(/[^A-Za-z0-9\s]/, {
-        message: 'password must include a special character',
+        message: "password must include a special character",
       }),
     confirmNewPassword: z
-      .string({ error: 'password must be a string' })
-      .min(1, { message: 'confirm new password is required' }),
+      .string({ error: "password must be a string" })
+      .min(1, { message: "confirm new password is required" }),
   })
   .refine((d) => d.newPassword === d.confirmNewPassword, {
-    path: ['confirmNewPassword'],
-    message: 'passwords must match',
+    path: ["confirmNewPassword"],
+    message: "passwords must match",
   })
   .strict();
-  

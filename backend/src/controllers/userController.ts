@@ -44,7 +44,10 @@ export const updateUser: RequestHandler<
     postalCode,
     city,
     phone,
+    roles,
   } = req.body;
+
+  const rolesArray = Array.isArray(roles) ? roles : roles ? [roles] : [];
 
   const updatedUser = await User.findByIdAndUpdate(
     id,
@@ -57,15 +60,18 @@ export const updateUser: RequestHandler<
       postalCode,
       city,
       phone,
+      roles: rolesArray,
     },
-    { new: true }
+    { new: true, runValidators: true } // Validatoren aktivieren
   );
 
   if (!updatedUser) {
-    throw new Error("User not found", { cause: { status: 404 } });
+    return res.status(404).json({ message: "User not found" });
   }
+
   res.status(200).json(updatedUser);
 };
+
 // DELETE USER ################################
 export const deleteUser: RequestHandler = async (req, res) => {
   const { id } = req.params;
