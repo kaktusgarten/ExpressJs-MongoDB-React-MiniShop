@@ -1,5 +1,6 @@
 import { use } from "react";
 import { GesamtseitenContext } from "../context/GesamtseitenContext";
+import { NavLink } from "react-router";
 
 export default function Warenkorb() {
   const { userData, einkaufswagen, setEinkaufswagen } = use<any | null>(
@@ -8,7 +9,6 @@ export default function Warenkorb() {
 
   // JETZT KAUFEN - BUTTON ACTION
   function orderArticles() {
-    
     const orderData = {
       userId: userData._id,
       products: einkaufswagen,
@@ -66,7 +66,7 @@ export default function Warenkorb() {
       ) : (
         <div className="text-2xl my-5">
           Zur Zeits nichts neues im Einkaufswagen! - Getätigte Einkäufe findest
-          du in deinem Benutzerkonto Bereich!
+          du unter "<NavLink to="/kontodaten" className="underline">Meine Kontodaten</NavLink>"!
         </div>
       )}
     </>

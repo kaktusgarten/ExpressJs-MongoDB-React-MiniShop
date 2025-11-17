@@ -168,7 +168,7 @@ export default function Header() {
                   <NavLink to="/kontodaten">Meine Kontodaten</NavLink>
                 </li>
                 <li>
-                  <NavLink to="/warenkorb">Mein Warenkorb</NavLink>
+                  <NavLink to="/warenkorb">&#128722; Warenkorb</NavLink>
                 </li>
               </ul>
             </nav>

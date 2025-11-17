@@ -1,4 +1,4 @@
-import RegistrationFormChangeUserData from "../components/RegistryFormChangeUserData";
+import FormChangeUserData from "../components/FormChangeUserData";
 import UserOrders from "../components/UserOrders";
 
 const AccountPage = () => {
@@ -9,7 +9,7 @@ const AccountPage = () => {
         <div className="grid sm:grid-cols-2 gap-8">
           <div className="">
             <h3 className="mb-2 text-xl my-6">Meine Kontodaten:</h3>
-            <RegistrationFormChangeUserData />
+            <FormChangeUserData />
           </div>
           <div className="">
             <h3 className="mb-2 text-xl mt-6 mb-5">Meine Bestellungen:</h3>

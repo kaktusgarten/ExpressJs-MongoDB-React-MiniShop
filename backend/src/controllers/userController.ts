@@ -35,11 +35,29 @@ export const updateUser: RequestHandler<
   UserInputDTO
 > = async (req, res) => {
   const { id } = req.params;
-  const { firstName, lastName, email } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    street,
+    houseNumber,
+    postalCode,
+    city,
+    phone,
+  } = req.body;
 
   const updatedUser = await User.findByIdAndUpdate(
     id,
-    { firstName, lastName, email },
+    {
+      firstName,
+      lastName,
+      email,
+      street,
+      houseNumber,
+      postalCode,
+      city,
+      phone,
+    },
     { new: true }
   );
 
